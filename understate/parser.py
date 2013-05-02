@@ -1,9 +1,9 @@
 import re
 class Parser:
 
-    RE_H1 = r"(?P<text>.*\n)[=]=*\n"
+    RE_H1 = r"(?P<text>.*)\n[=]=*\n"
     RE_EMPTY = r"\n"
-    RE_LINE = r".*\n"
+    RE_LINE = r"(?P<text>.*)\n"
 
     def __init__(self,renderer):
         self.matchers = [
@@ -16,7 +16,10 @@ class Parser:
         e = re.match(regex,buf,re.MULTILINE)
         text = None
         if e:
-            text = buf[e.start():e.end()]
+            if e.groups() == ():
+                text = buf[e.start():e.end()]
+            else:
+                text = e.group('text')
             buf = buf[e.end():]
         return (e!=None,buf,text)
    

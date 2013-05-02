@@ -23,7 +23,7 @@ class ParserTest(unittest.TestCase):
     def test_parse_header1(self):
         class Header1Renderer(ParserTest.Renderer):
             def onHeader1(self,text):
-                self.okay = True
+                self.okay = text == "test"
         r = Header1Renderer()
         parser = Parser(r)
         buf = "test\n====\n"
