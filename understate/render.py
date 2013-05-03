@@ -12,7 +12,9 @@ class CursesRenderer:
         self.stdscr.refresh()
         curses.start_color()
         self.refreshSize();
-        curses.init_pair(1,curses.COLOR_RED,curses.COLOR_BLACK)
+        curses.init_pair(1,curses.COLOR_WHITE,curses.COLOR_BLACK)
+        curses.init_pair(2,curses.COLOR_RED,curses.COLOR_BLACK)
+        curses.init_pair(3,curses.COLOR_YELLOW,curses.COLOR_BLACK)
         self.currentSlide = 0
 
     def clean(self):
@@ -37,7 +39,7 @@ class CursesRenderer:
     def onHeader(self,groups,font):
         text = groups["text"]
         output = font.renderText(text)
-        self.safeaddstr(output,curses.color_pair(1))
+        self.safeaddstr(output,curses.color_pair(3))
         self.stdscr.refresh()
 
     def onHeader1(self,groups):
@@ -56,7 +58,7 @@ class CursesRenderer:
 
     def onLine(self,groups):
         text = groups["text"]
-        self.safeaddstr(text.center(self.width),curses.color_pair(1))
+        self.safeaddstr(text.center(self.width),curses.color_pair(0))
         self.stdscr.refresh()
 
     def onCode(self,groups):
@@ -77,7 +79,7 @@ class CursesRenderer:
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
         subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
-        subwin.addstr(text,curses.color_pair(1))
+        subwin.addstr(text,curses.color_pair(2))
         self.stdscr.move(cy+len(lines),1)
 
     def onEnd(self):
