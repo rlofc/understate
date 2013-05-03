@@ -9,10 +9,12 @@ class Parser:
     RE_H1       = r"(?P<text>.*)\n[=]=*\n"
     RE_EMPTY    = r"\n"
     RE_LINE     = r"(?P<text>.*)\n"
+    RE_CODE     = r"(?s)(```)(?P<syntax>.*?)\n(?P<text>.*?)(```)"
 
     def __init__(self,renderer):
         self.matchers = [
             ( Parser.RE_H1, renderer.onHeader1 ),
+            ( Parser.RE_CODE, renderer.onCode ),
             ( Parser.RE_EMPTY, renderer.onEmpty ),
             ( Parser.RE_LINE, renderer.onLine )
         ]
