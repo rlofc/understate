@@ -9,6 +9,8 @@ class ParserTest(unittest.TestCase):
             pass
         def onLine(self,text):
             pass
+        def onEnd(self):
+            pass
     
     def test_parse_empty_lines(self):
         class EmptyLineRenderer(ParserTest.Renderer):
