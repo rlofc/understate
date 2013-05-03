@@ -34,12 +34,21 @@ class CursesRenderer:
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
-    def onHeader1(self,groups):
-        self.newSlide()
+    def onHeader(self,groups,font):
         text = groups["text"]
-        output = self.header1Font.renderText(text)
+        output = font.renderText(text)
         self.safeaddstr(output,curses.color_pair(1))
         self.stdscr.refresh()
+
+    def onHeader1(self,groups):
+        self.newSlide()
+        self.onHeader(groups,self.header1Font)
+
+    def onHeader2(self,groups):
+        self.onHeader(groups,self.header2Font)
+
+    def onHeader3(self,groups):
+        self.onHeader(groups,self.header3Font)
 
     def onEmpty(self,groups):
         self.safeaddstr('\n',curses.color_pair(1))

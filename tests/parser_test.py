@@ -5,6 +5,10 @@ class ParserTest(unittest.TestCase):
     class Renderer:
         def onHeader1(self,groups):
             pass
+        def onHeader2(self,groups):
+            pass
+        def onHeader3(self,groups):
+            pass
         def onEmpty(self,groups):
             pass
         def onLine(self,groups):
@@ -41,6 +45,36 @@ class ParserTest(unittest.TestCase):
         r = Header1Renderer()
         parser = Parser(r)
         buf = "#test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_header2(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader2(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "test\n----\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_header2_variant(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader2(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "##test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_headerr(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader3(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "###test\n"
         parser.parse(buf)
         self.assertTrue(r.okay)
 
