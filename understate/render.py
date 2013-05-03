@@ -14,6 +14,9 @@ class CursesRenderer:
         self.refreshSize();
         curses.init_pair(1,curses.COLOR_RED,curses.COLOR_BLACK)
 
+    def clean(self):
+        curses.endwin()
+
     def refreshSize(self):
         (self.height,self.width) = self.stdscr.getmaxyx()
         self.header1Font = Figlet(font='computer',justify='center',width=self.width)
