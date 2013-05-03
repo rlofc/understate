@@ -1,4 +1,4 @@
 understate
 ==========
 
-make stunning terminal presentations using markdown and some ncurses magic
+Make stunning terminal presentations using markdown and some ncurses magic
