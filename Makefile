@@ -8,3 +8,5 @@ clean-pyc:
 test:
 	@python -m unittest discover -p '*_test.py'
 
+requirements:
+	@pip install -r requirements.txt --use-mirrors
