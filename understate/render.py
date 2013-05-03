@@ -68,9 +68,12 @@ class CursesRenderer:
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
-        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
+        margins = self.stdscr.subwin(len(lines)+1,textw+2,cy+1,xpos-1)
+        margins.bkgd(' ',curses.color_pair(16))
+        subwin = self.stdscr.subwin(len(lines),textw+1,cy+2,xpos)
+        subwin.bkgd(' ',curses.color_pair(16))
         highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
-        self.stdscr.move(cy+len(lines),0)
+        self.stdscr.move(cy+len(lines)+2,0)
 
     def onList(self,groups):
         text = groups["text"]
