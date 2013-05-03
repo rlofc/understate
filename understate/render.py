@@ -3,6 +3,7 @@ from pyfiglet import Figlet
 from pygments import highlight
 from pygments.lexers import TextLexer
 from pygments.formatters import NullFormatter
+from pygmentsext import UnderstateFormatter
 
 class CursesRenderer:
     def __init__(self):
@@ -42,10 +43,9 @@ class CursesRenderer:
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
         subwin = self.stdscr.subwin(len(lines),textw+2,cy,xpos)
-        subwin.addstr(highlight(text,TextLexer(),NullFormatter()))
+        highlight(text,TextLexer(),UnderstateFormatter(style='monokai'),subwin)
         self.stdscr.move(cy+len(lines)+1,0)
 
     def onEnd(self):
         c = self.stdscr.getch()
         self.stdscr.clear()
-
