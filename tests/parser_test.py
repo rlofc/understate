@@ -15,6 +15,8 @@ class ParserTest(unittest.TestCase):
             pass
         def onCode(self,groups):
             pass
+        def onList(self,groups):
+            pass
         def onEnd(self):
             pass
     
@@ -96,6 +98,18 @@ class ParserTest(unittest.TestCase):
         r = CodeRenderer()
         parser = Parser(r)
         buf = "```c\nint a = 1;```"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_list(self):
+        class CodeRenderer(ParserTest.Renderer):
+            def onList(self,groups):
+                ret = "* item1\n* item2\n"
+                self.okay = groups["text"] == ret
+
+        r = CodeRenderer()
+        parser = Parser(r)
+        buf = "* item1\n* item2\n"
         parser.parse(buf)
         self.assertTrue(r.okay)
 

@@ -70,5 +70,15 @@ class CursesRenderer:
         highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
         self.stdscr.move(cy+len(lines),0)
 
+    def onList(self,groups):
+        text = groups["text"]
+        lines = text.split('\n')
+        textw = len(max(lines,key=len))
+        xpos = (self.width - textw)/2
+        (cy,cx) = self.stdscr.getyx()
+        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
+        subwin.addstr(text,curses.color_pair(1))
+        self.stdscr.move(cy+len(lines),1)
+
     def onEnd(self):
         self.newSlide()
