@@ -1,5 +1,8 @@
 import curses
 from pyfiglet import Figlet
+from pygments import highlight
+from pygments.lexers import TextLexer
+from pygments.formatters import NullFormatter
 
 class BasicRenderer:
     def onHeader1(self,text):
@@ -42,6 +45,15 @@ class CursesRenderer:
     def onLine(self,text):
         self.safeaddstr(text.center(self.width),curses.color_pair(1))
         self.stdscr.refresh()
+
+    def onCode(self,text):
+        lines = text.split('\n')
+        textw = len(max(lines,key=len))
+        xpos = (self.width - textw)/2
+        (cy,cx) = self.stdscr.getyx()
+        subwin = self.stdscr.subwin(len(lines),textw+2,cy,xpos)
+        subwin.addstr(highlight(text,TextLexer(),NullFormatter()))
+        self.stdscr.move(cy+len(lines)+1,0)
 
     def onEnd(self):
         c = self.stdscr.getch()
