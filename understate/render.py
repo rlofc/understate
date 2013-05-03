@@ -34,12 +34,21 @@ class CursesRenderer:
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
-    def onHeader1(self,groups):
-        self.newSlide()
+    def onHeader(self,groups,font):
         text = groups["text"]
-        output = self.header1Font.renderText(text)
+        output = font.renderText(text)
         self.safeaddstr(output,curses.color_pair(1))
         self.stdscr.refresh()
+
+    def onHeader1(self,groups):
+        self.newSlide()
+        self.onHeader(groups,self.header1Font)
+
+    def onHeader2(self,groups):
+        self.onHeader(groups,self.header2Font)
+
+    def onHeader3(self,groups):
+        self.onHeader(groups,self.header3Font)
 
     def onEmpty(self,groups):
         self.safeaddstr('\n',curses.color_pair(1))
@@ -60,6 +69,16 @@ class CursesRenderer:
         subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
         highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
         self.stdscr.move(cy+len(lines),0)
+
+    def onList(self,groups):
+        text = groups["text"]
+        lines = text.split('\n')
+        textw = len(max(lines,key=len))
+        xpos = (self.width - textw)/2
+        (cy,cx) = self.stdscr.getyx()
+        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
+        subwin.addstr(text,curses.color_pair(1))
+        self.stdscr.move(cy+len(lines),1)
 
     def onEnd(self):
         self.newSlide()

@@ -5,11 +5,17 @@ class ParserTest(unittest.TestCase):
     class Renderer:
         def onHeader1(self,groups):
             pass
+        def onHeader2(self,groups):
+            pass
+        def onHeader3(self,groups):
+            pass
         def onEmpty(self,groups):
             pass
         def onLine(self,groups):
             pass
         def onCode(self,groups):
+            pass
+        def onList(self,groups):
             pass
         def onEnd(self):
             pass
@@ -34,6 +40,46 @@ class ParserTest(unittest.TestCase):
         parser.parse(buf)
         self.assertTrue(r.okay)
 
+    def test_parse_header1_variant(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader1(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "#test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_header2(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader2(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "test\n----\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_header2_variant(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader2(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "##test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_headerr(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader3(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "###test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
     def test_parse_lines(self):
         class LineRenderer(ParserTest.Renderer):
             def __init__(self): self.lines = 0
@@ -52,6 +98,18 @@ class ParserTest(unittest.TestCase):
         r = CodeRenderer()
         parser = Parser(r)
         buf = "```c\nint a = 1;```"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
+    def test_parse_list(self):
+        class CodeRenderer(ParserTest.Renderer):
+            def onList(self,groups):
+                ret = "* item1\n* item2\n"
+                self.okay = groups["text"] == ret
+
+        r = CodeRenderer()
+        parser = Parser(r)
+        buf = "* item1\n* item2\n"
         parser.parse(buf)
         self.assertTrue(r.okay)
 
