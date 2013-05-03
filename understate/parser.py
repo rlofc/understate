@@ -22,20 +22,17 @@ class Parser:
 
     def _match(self,regex,buf):
         e = re.match(regex,buf,re.MULTILINE)
-        text = None
+        groups = None
         if e:
-            if e.groups() == ():
-                text = buf[e.start():e.end()]
-            else:
-                text = e.group('text')
             buf = buf[e.end():]
-        return (e!=None,buf,text)
+            groups = e.groupdict()
+        return (e!=None,buf,groups)
    
     def parse(self,buf):
         while (len(buf)>0):
             for r in self.matchers:
-                (res,buf,text) = self._match(r[Parser.M_REGEX],buf)
+                (res,buf,groups) = self._match(r[Parser.M_REGEX],buf)
                 if res:
-                    output = r[Parser.M_RENDERER](text)
+                    output = r[Parser.M_RENDERER](groups)
                     break
         self.renderer.onEnd()

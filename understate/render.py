@@ -1,7 +1,7 @@
 import curses
 from pyfiglet import Figlet
 from pygments import highlight
-from pygments.lexers import TextLexer
+from pygments.lexers import get_lexer_by_name
 from pygments.formatters import NullFormatter
 from pygmentsext import UnderstateFormatter
 
@@ -13,6 +13,10 @@ class CursesRenderer:
         curses.start_color()
         self.refreshSize();
         curses.init_pair(1,curses.COLOR_RED,curses.COLOR_BLACK)
+        self.currentSlide = 0
+
+    def clean(self):
+        curses.endwin()
 
     def refreshSize(self):
         (self.height,self.width) = self.stdscr.getmaxyx()
@@ -24,28 +28,38 @@ class CursesRenderer:
         try: self.stdscr.addstr(output,attr)
         except curses.error: pass
 
-    def onHeader1(self,text):
+    def newSlide(self):
+        if self.currentSlide > 0:
+            c = self.stdscr.getch()
+            self.stdscr.clear()
+        self.currentSlide = self.currentSlide + 1
+
+    def onHeader1(self,groups):
+        self.newSlide()
+        text = groups["text"]
         output = self.header1Font.renderText(text)
         self.safeaddstr(output,curses.color_pair(1))
         self.stdscr.refresh()
 
-    def onEmpty(self,text):
-        self.safeaddstr(text,curses.color_pair(1))
+    def onEmpty(self,groups):
+        self.safeaddstr('\n',curses.color_pair(1))
         self.stdscr.refresh()
 
-    def onLine(self,text):
+    def onLine(self,groups):
+        text = groups["text"]
         self.safeaddstr(text.center(self.width),curses.color_pair(1))
         self.stdscr.refresh()
 
-    def onCode(self,text):
+    def onCode(self,groups):
+        text = groups["text"]
+        syntax = groups["syntax"] or "txt"
         lines = text.split('\n')
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
-        subwin = self.stdscr.subwin(len(lines),textw+2,cy,xpos)
-        highlight(text,TextLexer(),UnderstateFormatter(style='monokai'),subwin)
-        self.stdscr.move(cy+len(lines)+1,0)
+        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
+        highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
+        self.stdscr.move(cy+len(lines),0)
 
     def onEnd(self):
-        c = self.stdscr.getch()
-        self.stdscr.clear()
+        self.newSlide()
