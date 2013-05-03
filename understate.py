@@ -14,5 +14,5 @@ args = parser.parse_args()
 
 # read the markdown file, parse and render
 f = open(args.filename,'r')
-Parser(BasicRenderer()).parse(f.read())
+Parser(CursesRenderer()).parse(f.read())
 f.close()

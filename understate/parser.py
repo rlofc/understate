@@ -16,6 +16,7 @@ class Parser:
             ( Parser.RE_EMPTY, renderer.onEmpty ),
             ( Parser.RE_LINE, renderer.onLine )
         ]
+        self.renderer = renderer
 
     def _match(self,regex,buf):
         e = re.match(regex,buf,re.MULTILINE)
@@ -35,3 +36,4 @@ class Parser:
                 if res:
                     output = r[Parser.M_RENDERER](text)
                     break
+        self.renderer.onEnd()
