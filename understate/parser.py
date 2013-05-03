@@ -6,10 +6,10 @@ class Parser:
     M_RENDERER = 1 # index of renderer method in matchers tuples
 
     # Markdown regular expressions
-    RE_H1       = r"(?P<text>.*)\n[=]=*\n"
-    RE_EMPTY    = r"\n"
-    RE_LINE     = r"(?P<text>.*)\n"
-    RE_CODE     = r"(?s)(```)(?P<syntax>.*?)\n(?P<text>.*?)(```)"
+    RE_H1       = [r"(?P<text>.*)\n[=]=*\n",r"#(?P<text>.*)\n"]
+    RE_EMPTY    = [r"\n"]
+    RE_LINE     = [r"(?P<text>.*)\n"]
+    RE_CODE     = [r"(?s)(```)(?P<syntax>.*?)\n(?P<text>.*?)(```)"]
 
     def __init__(self,renderer):
         self.matchers = [
@@ -20,12 +20,16 @@ class Parser:
         ]
         self.renderer = renderer
 
-    def _match(self,regex,buf):
-        e = re.match(regex,buf,re.MULTILINE)
+    def _match(self,regexs,buf):
         groups = None
-        if e:
-            buf = buf[e.end():]
-            groups = e.groupdict()
+        e = None
+        for regex in regexs:
+            e = re.match(regex,buf,re.MULTILINE)
+            if e:
+                buf = buf[e.end():]
+                groups = e.groupdict()
+                break
+
         return (e!=None,buf,groups)
    
     def parse(self,buf):

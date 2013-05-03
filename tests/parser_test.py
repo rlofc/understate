@@ -34,6 +34,16 @@ class ParserTest(unittest.TestCase):
         parser.parse(buf)
         self.assertTrue(r.okay)
 
+    def test_parse_header1_variant(self):
+        class Header1Renderer(ParserTest.Renderer):
+            def onHeader1(self,groups):
+                self.okay = groups["text"] == "test"
+        r = Header1Renderer()
+        parser = Parser(r)
+        buf = "#test\n"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
+
     def test_parse_lines(self):
         class LineRenderer(ParserTest.Renderer):
             def __init__(self): self.lines = 0
