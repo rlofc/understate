@@ -4,6 +4,8 @@ import argparse
 from understate.parser import *
 from understate.render import *
 
+renderer = CursesRenderer()
+
 try:
     # Build the args parser and parse
     parser = argparse.ArgumentParser(description='Present a markdown file')
@@ -15,7 +17,6 @@ try:
 
     # read the markdown file, parse and render
     f = open(args.filename,'r')
-    renderer = CursesRenderer()
     Parser(CursesRenderer()).parse(f.read())
     f.close()
 
