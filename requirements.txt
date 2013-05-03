@@ -1,0 +1,2 @@
+pyfiglet == 0.6.1
+pygments == 1.6
