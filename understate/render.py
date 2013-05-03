@@ -46,9 +46,9 @@ class CursesRenderer:
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
-        subwin = self.stdscr.subwin(len(lines),textw+2,cy,xpos)
+        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
         highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
-        self.stdscr.move(cy+len(lines)+1,0)
+        self.stdscr.move(cy+len(lines),0)
 
     def onEnd(self):
         c = self.stdscr.getch()
