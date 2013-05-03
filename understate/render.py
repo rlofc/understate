@@ -4,16 +4,6 @@ from pygments import highlight
 from pygments.lexers import TextLexer
 from pygments.formatters import NullFormatter
 
-class BasicRenderer:
-    def onHeader1(self,text):
-        print(text)
-
-    def onEmpty(self,text):
-        print(text)
-
-    def onLine(self,text):
-        print(text)
-
 class CursesRenderer:
     def __init__(self):
         self.stdscr = curses.initscr()
