@@ -9,6 +9,8 @@ class ParserTest(unittest.TestCase):
             pass
         def onLine(self,text):
             pass
+        def onCode(self,text):
+            pass
         def onEnd(self):
             pass
     
@@ -42,6 +44,16 @@ class ParserTest(unittest.TestCase):
         buf = "test\n====\nline1\nline2\nline3\n"
         parser.parse(buf)
         self.assertEqual(r.lines,3)
+
+    def test_parse_code(self):
+        class CodeRenderer(ParserTest.Renderer):
+            def onCode(self,text):
+                self.okay = text == "int a = 1;"
+        r = CodeRenderer()
+        parser = Parser(r)
+        buf = "```c\nint a = 1;```"
+        parser.parse(buf)
+        self.assertTrue(r.okay)
 
 if __name__ == '__main__':
         unittest.main()
