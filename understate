@@ -4,16 +4,17 @@ import argparse
 from uslib.parser import *
 from uslib.render import *
 
+# Build the args parser and parse
+parser = argparse.ArgumentParser(description='Present a markdown file')
+
+parser.add_argument('filename', metavar='filename', type=str, 
+                           help='an integer for the accumulator')
+
+args = parser.parse_args()
+
 renderer = CursesRenderer()
 
 try:
-    # Build the args parser and parse
-    parser = argparse.ArgumentParser(description='Present a markdown file')
-
-    parser.add_argument('filename', metavar='filename', type=str, 
-                               help='an integer for the accumulator')
-
-    args = parser.parse_args()
 
     # read the markdown file, parse and render
     f = open(args.filename,'r')
