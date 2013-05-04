@@ -11,16 +11,16 @@ class Parser:
     RE_H3       = [r"###(?P<text>.*)\n"]
     RE_EMPTY    = [r"\n"]
     RE_LINE     = [r"(?P<text>.*)\n"]
-    RE_CODE     = [r"(?s)(```)(?P<syntax>.*?)\n(?P<text>.*?)(```)"]
-    RE_LIST     = [r"(?P<text>([\*][ ] *.*\n)+)"]
+    RE_CODE     = [r"(?s)(```)(?P<syntax>.*?)\n(?P<text>.*?)(```)",r"(?P<text>(\ \ \ \ .*\n)+)"]
+    RE_LIST     = [r"(?P<text>([ ]*[\*][ ] *.*\n)+)"]
 
     def __init__(self,renderer):
         self.matchers = [
             ( Parser.RE_H3, renderer.onHeader3 ),
             ( Parser.RE_H2, renderer.onHeader2 ),
             ( Parser.RE_H1, renderer.onHeader1 ),
-            ( Parser.RE_CODE, renderer.onCode ),
             ( Parser.RE_LIST, renderer.onList ),
+            ( Parser.RE_CODE, renderer.onCode ),
             ( Parser.RE_EMPTY, renderer.onEmpty ),
             ( Parser.RE_LINE, renderer.onLine )
         ]

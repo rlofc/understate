@@ -3,12 +3,13 @@ import argparse
 
 from uslib.parser import *
 from uslib.render import *
-
+import locale
+locale.setlocale(locale.LC_ALL,"")
 # Build the args parser and parse
 parser = argparse.ArgumentParser(description='Present a markdown file')
 
 parser.add_argument('filename', metavar='filename', type=str, 
-                           help='an integer for the accumulator')
+                           help='markdown file to render')
 
 args = parser.parse_args()
 
