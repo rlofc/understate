@@ -8,7 +8,7 @@ from uslib.render import *
 parser = argparse.ArgumentParser(description='Present a markdown file')
 
 parser.add_argument('filename', metavar='filename', type=str, 
-                           help='an integer for the accumulator')
+                           help='markdown file to render')
 
 args = parser.parse_args()
 
