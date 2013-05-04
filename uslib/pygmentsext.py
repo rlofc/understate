@@ -7,7 +7,7 @@ from pygments.formatters import Terminal256Formatter
 # so we can create curses color_pairs
 class UnderstateFormatter(Terminal256Formatter):
     def _setup_styles(self):
-        index = 2
+        index = 16 # leave the first 16 pairs for understate
         for ttype, ndef in self.style:
             attrspec = 0
             fg = 0; bg = 235;

@@ -10,3 +10,6 @@ test:
 
 requirements:
 	@pip install -r requirements.txt --use-mirrors
+
+install: requirements
+	python setup.py install

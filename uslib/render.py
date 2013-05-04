@@ -12,7 +12,9 @@ class CursesRenderer:
         self.stdscr.refresh()
         curses.start_color()
         self.refreshSize();
-        curses.init_pair(1,curses.COLOR_RED,curses.COLOR_BLACK)
+        curses.init_pair(1,curses.COLOR_WHITE,curses.COLOR_BLACK)
+        curses.init_pair(2,curses.COLOR_RED,curses.COLOR_BLACK)
+        curses.init_pair(3,curses.COLOR_YELLOW,curses.COLOR_BLACK)
         self.currentSlide = 0
 
     def clean(self):
@@ -37,7 +39,7 @@ class CursesRenderer:
     def onHeader(self,groups,font):
         text = groups["text"]
         output = font.renderText(text)
-        self.safeaddstr(output,curses.color_pair(1))
+        self.safeaddstr(output,curses.color_pair(3))
         self.stdscr.refresh()
 
     def onHeader1(self,groups):
@@ -56,7 +58,7 @@ class CursesRenderer:
 
     def onLine(self,groups):
         text = groups["text"]
-        self.safeaddstr(text.center(self.width),curses.color_pair(1))
+        self.safeaddstr(text.center(self.width),curses.color_pair(0))
         self.stdscr.refresh()
 
     def onCode(self,groups):
@@ -66,9 +68,12 @@ class CursesRenderer:
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
-        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
+        margins = self.stdscr.subwin(len(lines)+1,textw+2,cy+1,xpos-1)
+        margins.bkgd(' ',curses.color_pair(16))
+        subwin = self.stdscr.subwin(len(lines),textw+1,cy+2,xpos)
+        subwin.bkgd(' ',curses.color_pair(16))
         highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
-        self.stdscr.move(cy+len(lines),0)
+        self.stdscr.move(cy+len(lines)+2,0)
 
     def onList(self,groups):
         text = groups["text"]
@@ -77,7 +82,7 @@ class CursesRenderer:
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
         subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
-        subwin.addstr(text,curses.color_pair(1))
+        subwin.addstr(text,curses.color_pair(2))
         self.stdscr.move(cy+len(lines),1)
 
     def onEnd(self):

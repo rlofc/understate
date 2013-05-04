@@ -1,5 +1,5 @@
 import unittest
-from understate.parser import *
+from uslib.parser import *
 
 class ParserTest(unittest.TestCase):
     class Renderer:
