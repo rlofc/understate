@@ -37,11 +37,16 @@ class CursesRenderer:
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
-    def preventOverflow(self,nLines,cy):
-        if (nLines+cy+1) > self.height:
-            self.newSlide()
-            (cy,cx) = self.stdscr.getyx()
-        return cy
+    def willNotOverflow(self,nLines):
+        (cy,cx) = self.stdscr.getyx()
+        return (nLines+cy) < self.height - 2
+
+    def unIndent(self,text):
+        diff = len(text)-len(text.lstrip())
+        if (diff>0):
+            text = text[diff:]
+            text = text.replace('\n'+(' ' * diff),'\n')
+        return text
 
     def onHeader(self,groups,font):
         text = groups["text"]
@@ -59,6 +64,7 @@ class CursesRenderer:
         self.onHeader(groups,self.header2Font)
 
     def onHeader3(self,groups):
+        self.newSlide()
         self.onHeader(groups,self.header3Font)
 
     def onEmpty(self,groups):
@@ -72,33 +78,39 @@ class CursesRenderer:
 
     def onCode(self,groups):
         text = groups["text"]
-        syntax = groups["syntax"] or "txt"
+        text = self.unIndent(text)
+        syntax = "text"
+        if groups.has_key("syntax"):
+            syntax = groups["syntax"]
+            if syntax=='':syntax = 'text'
         lines = text.split('\n')
-        textw = len(max(lines,key=len))
-        xpos = (self.width - textw)/2
-        (cy,cx) = self.stdscr.getyx()
+        nLines = len(lines)
 
-        cy = self.preventOverflow(len(lines)+2,cy)
+        if self.willNotOverflow(nLines):
+            textw = len(max(lines,key=len))
+            xpos = (self.width - textw)/2
+            (cy,cx) = self.stdscr.getyx()
 
-        margins = self.stdscr.subwin(len(lines)+1,textw+2,cy+1,xpos-1)
-        margins.bkgd(' ',curses.color_pair(16))
-        subwin = self.stdscr.subwin(len(lines),textw+1,cy+2,xpos)
-        subwin.bkgd(' ',curses.color_pair(16))
-        highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
-        self.stdscr.move(cy+len(lines)+2,0)
+            margins = self.stdscr.subwin(nLines+1,textw+2,cy+1,xpos-1)
+            margins.bkgd(' ',curses.color_pair(16))
+            subwin = self.stdscr.subwin(nLines,textw+1,cy+2,xpos)
+            subwin.bkgd(' ',curses.color_pair(16))
+            highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
+            self.stdscr.move(cy+nLines+2,0)
 
     def onList(self,groups):
         text = groups["text"]
         lines = text.split('\n')
-        textw = len(max(lines,key=len))
-        xpos = (self.width - textw)/2
-        (cy,cx) = self.stdscr.getyx()
+        nLines = len(lines)
+    
+        if self.willNotOverflow(nLines):
+            textw = len(max(lines,key=len))
+            xpos = (self.width - textw)/2
+            (cy,cx) = self.stdscr.getyx()
 
-        cy = self.preventOverflow(len(lines),cy)
-
-        subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
-        subwin.addstr(text,curses.color_pair(2))
-        self.stdscr.move(cy+len(lines),1)
+            subwin = self.stdscr.subwin(nLines,textw+2,cy+1,xpos)
+            subwin.addstr(text,curses.color_pair(2))
+            self.stdscr.move(cy+nLines,1)
 
     def onEnd(self):
         self.newSlide()

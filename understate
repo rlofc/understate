@@ -3,7 +3,8 @@ import argparse
 
 from uslib.parser import *
 from uslib.render import *
-
+import locale
+locale.setlocale(locale.LC_ALL,"")
 # Build the args parser and parse
 parser = argparse.ArgumentParser(description='Present a markdown file')
 

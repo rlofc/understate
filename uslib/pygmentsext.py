@@ -42,4 +42,4 @@ class UnderstateFormatter(Terminal256Formatter):
         for ttype, value in tokensource:
             while ttype not in self.styles:
                 ttype = ttype.parent
-            outfile.addstr(value,self.styles[ttype])
+            outfile.addstr(value.encode('utf-8'),self.styles[ttype])
