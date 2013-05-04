@@ -3,12 +3,12 @@ from distutils.core import setup
 files = ["uslib/*"]
 
 REQUIREMENTS = [
-    "pygments == 0.6.1",
-    "pyfiglet == 1.6"
+    "pyfiglet == 0.6.1",
+    "pygments == 1.6"
     ]
 
 setup(name = "understate",
-        version = "200",
+        version = "0.1.6",
         description = "markdown presentations using ncurses",
         author = "Ithai Levi",
         author_email = "ithai.levi@gmail.com",
@@ -21,7 +21,7 @@ setup(name = "understate",
             'Development Status :: 4 - Beta',
             'Environment :: Console :: Curses',
             'Intended Audience :: End Users/Desktop',
-            'License :: OSI Approved :: GNU General Public License v3(GPLv3)',
+            'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
             'Operating System :: POSIX :: Linux',
             'Operating System :: MacOS',
             'Programming Language :: Python',
