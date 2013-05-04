@@ -16,6 +16,7 @@ class CursesRenderer:
         curses.init_pair(2,curses.COLOR_RED,curses.COLOR_BLACK)
         curses.init_pair(3,curses.COLOR_YELLOW,curses.COLOR_BLACK)
         self.currentSlide = 0
+        self.lastHeader = ''
 
     def clean(self):
         curses.endwin()
@@ -36,17 +37,25 @@ class CursesRenderer:
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
+    def preventOverflow(self,nLines,cy):
+        if (nLines+cy+1) > self.height:
+            self.newSlide()
+            (cy,cx) = self.stdscr.getyx()
+        return cy
+
     def onHeader(self,groups,font):
         text = groups["text"]
         output = font.renderText(text)
         self.safeaddstr(output,curses.color_pair(3))
         self.stdscr.refresh()
+        self.lastHeader = text
 
     def onHeader1(self,groups):
         self.newSlide()
         self.onHeader(groups,self.header1Font)
 
     def onHeader2(self,groups):
+        self.newSlide()
         self.onHeader(groups,self.header2Font)
 
     def onHeader3(self,groups):
@@ -68,6 +77,9 @@ class CursesRenderer:
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
+
+        cy = self.preventOverflow(len(lines)+2,cy)
+
         margins = self.stdscr.subwin(len(lines)+1,textw+2,cy+1,xpos-1)
         margins.bkgd(' ',curses.color_pair(16))
         subwin = self.stdscr.subwin(len(lines),textw+1,cy+2,xpos)
@@ -81,6 +93,9 @@ class CursesRenderer:
         textw = len(max(lines,key=len))
         xpos = (self.width - textw)/2
         (cy,cx) = self.stdscr.getyx()
+
+        cy = self.preventOverflow(len(lines),cy)
+
         subwin = self.stdscr.subwin(len(lines),textw+2,cy+1,xpos)
         subwin.addstr(text,curses.color_pair(2))
         self.stdscr.move(cy+len(lines),1)
