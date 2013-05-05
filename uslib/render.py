@@ -4,6 +4,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import NullFormatter
 from pygmentsext import UnderstateFormatter
+from random import shuffle
 
 class CursesRenderer:
     def __init__(self):
@@ -17,6 +18,11 @@ class CursesRenderer:
         curses.init_pair(3,curses.COLOR_YELLOW,curses.COLOR_BLACK)
         self.currentSlide = 0
         self.lastHeader = ''
+        self.screenmtx = []
+        for y in range(self.height-1):
+            for x in range(self.width):
+                self.screenmtx.append([y,x])
+        shuffle(self.screenmtx)
 
     def clean(self):
         curses.endwin()
@@ -31,9 +37,17 @@ class CursesRenderer:
         try: self.stdscr.addstr(output,attr)
         except curses.error: pass
 
+    def fade(self):
+        curses.curs_set(0)
+        for t in self.screenmtx:
+            self.stdscr.addch(t[0],t[1],' ')
+            self.stdscr.refresh()
+        curses.curs_set(2)
+
     def newSlide(self):
         if self.currentSlide > 0:
             c = self.stdscr.getch()
+            self.fade()
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
