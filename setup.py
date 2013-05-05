@@ -8,7 +8,7 @@ REQUIREMENTS = [
     ]
 
 setup(name = "understate",
-        version = "0.1.6",
+        version = "0.2.1",
         description = "markdown presentations using ncurses",
         author = "Ithai Levi",
         author_email = "ithai.levi@gmail.com",
@@ -18,7 +18,7 @@ setup(name = "understate",
         scripts = ["understate"],
         long_description = """Create stunnig terminal presentations user markdown and some ncurses magic""",
         classifiers=[
-            'Development Status :: 4 - Beta',
+            'Development Status :: 3 - Alpha',
             'Environment :: Console :: Curses',
             'Intended Audience :: End Users/Desktop',
             'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
