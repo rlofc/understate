@@ -37,9 +37,9 @@ class CursesRenderer:
             self.stdscr.clear()
         self.currentSlide = self.currentSlide + 1
 
-    def willNotOverflow(self,nLines):
+    def willNotOverflow(self,nLines,textw):
         (cy,cx) = self.stdscr.getyx()
-        return (nLines+cy) < self.height - 2
+        return (nLines+cy) < self.height - 2 and textw < self.width - 2
 
     def unIndent(self,text):
         diff = len(text)-len(text.lstrip())
@@ -85,9 +85,9 @@ class CursesRenderer:
             if syntax=='':syntax = 'text'
         lines = text.split('\n')
         nLines = len(lines)
+        textw = len(max(lines,key=len))
 
-        if self.willNotOverflow(nLines):
-            textw = len(max(lines,key=len))
+        if self.willNotOverflow(nLines,textw):
             xpos = (self.width - textw)/2
             (cy,cx) = self.stdscr.getyx()
 
@@ -102,9 +102,9 @@ class CursesRenderer:
         text = groups["text"]
         lines = text.split('\n')
         nLines = len(lines)
-    
-        if self.willNotOverflow(nLines):
-            textw = len(max(lines,key=len))
+        textw = len(max(lines,key=len))
+
+        if self.willNotOverflow(nLines,textw):
             xpos = (self.width - textw)/2
             (cy,cx) = self.stdscr.getyx()
 
