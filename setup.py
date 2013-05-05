@@ -18,7 +18,7 @@ setup(name = "understate",
         scripts = ["understate"],
         long_description = """Create stunnig terminal presentations user markdown and some ncurses magic""",
         classifiers=[
-            'Development Status :: 4 - Beta',
+            'Development Status :: 3 - Alpha',
             'Environment :: Console :: Curses',
             'Intended Audience :: End Users/Desktop',
             'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
