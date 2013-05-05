@@ -2,8 +2,18 @@ understate
 ==========
 [![Build Status](https://travis-ci.org/L3V3L9/understate.png)](https://travis-ci.org/L3V3L9/understate)
 
-Make stunning terminal presentations using markdown and some ncurses magic
+Make stunning terminal presentations using markdown and some ncurses magic.
 
+Understate presents regular markdown file as beautifully designed presentation that runs in your terminal window.
+
+Highlights:
+
+* Terminal application, no GUI whatsoever
+* Uses standard markdown language syntax, no learning curve
+* Syntax highlighting for almost any programming language
+* Lightweight and cross platform
+* Much faster than Power Point
+* Cool animations (will be implemented in version 0.3)
 
 Install
 -------
