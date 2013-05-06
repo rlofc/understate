@@ -4,16 +4,17 @@ understate
 
 Make stunning terminal presentations using markdown and some ncurses magic.
 
-Understate presents regular markdown file as beautifully designed presentation that runs in your terminal window.
+Overview
+--------
+Understate renders regular markdown file into beautiful ascii art presentation that runs in your terminal.
 
 Highlights:
 
-* Terminal application, no GUI whatsoever
-* Uses standard markdown language syntax, no learning curve
-* Syntax highlighting for almost any programming language
-* Lightweight and cross platform
-* Much faster than Power Point
-* Cool animations (will be implemented in version 0.3)
+* A curses console application. No GUI whatsoever.
+* Uses standard markdown syntax. No learning curve.
+* Syntax highlighting for almost any programming language using Pygments.
+* Lightweight and cross platform.
+* Cool slide transitions (coming in version 0.3)
 
 Install
 -------
