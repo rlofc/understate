@@ -5,6 +5,8 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import NullFormatter
 from pygmentsext import UnderstateFormatter
 from random import shuffle
+from datetime import datetime
+from time import sleep
 
 class CursesRenderer:
     def __init__(self):
@@ -39,9 +41,14 @@ class CursesRenderer:
 
     def fade(self):
         curses.curs_set(0)
+        tpc = float(1/float(len(self.screenmtx)))
         for t in self.screenmtx:
+            m1 = datetime.now()
             self.stdscr.addch(t[0],t[1],' ')
             self.stdscr.refresh()
+            m2 = datetime.now()
+            if (m2-m1).microseconds/1000000.0 < tpc:
+                sleep(tpc - ((m2-m1).microseconds/1000000.0))
         curses.curs_set(2)
 
     def newSlide(self):
