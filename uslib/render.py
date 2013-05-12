@@ -25,7 +25,8 @@ class CursesRenderer:
             for x in range(self.width):
                 self.screenmtx.append([y,x])
         shuffle(self.screenmtx)
-
+        self.currentLineLength = 0
+        self.padForLine = None
     def clean(self):
         curses.endwin()
 
@@ -49,7 +50,7 @@ class CursesRenderer:
             m2 = datetime.now()
             if (m2-m1).microseconds/1000000.0 < tpc:
                 sleep(tpc - ((m2-m1).microseconds/1000000.0))
-        curses.curs_set(2)
+        curses.curs_set(1)
 
     def newSlide(self):
         if self.currentSlide > 0:
@@ -92,10 +93,38 @@ class CursesRenderer:
         self.safeaddstr('\n',curses.color_pair(1))
         self.stdscr.refresh()
 
+    def closeLine(self):
+        if self.padForLine:
+            (cy,cx) = self.stdscr.getyx()
+            if cy<self.height-1:
+                self.padForLine.refresh(0,0,cy,(self.width-self.currentLineLength)/2,cy,(self.width-self.currentLineLength)/2+self.currentLineLength)
+                self.currentLineLength = 0
+                self.stdscr.move(cy+1,0)
+            else:
+                self.currentLineLength = 0
+
+    def appendToLine(self,text):
+        if self.currentLineLength == 0:
+            (cy,cx) = self.stdscr.getyx()
+            self.padForLine = curses.newpad(1,self.width)
+        self.padForLine.addstr(text,curses.color_pair(0))
+        self.currentLineLength = self.currentLineLength+len(text)
+        if self.currentLineLength>(self.width-(self.width/4)):
+            self.closeLine()
+
     def onLine(self,groups):
         text = groups["text"]
-        self.safeaddstr(text.center(self.width),curses.color_pair(0))
-        self.stdscr.refresh()
+        self.appendToLine(text)
+
+    def onLink(self,groups):
+        text = groups["link"]
+        self.appendToLine(text)
+
+    def onLineFeed(self,groups):
+        self.closeLine()
+
+    def onImage(self,groups):
+        pass
 
     def onCode(self,groups):
         text = groups["text"]
@@ -111,12 +140,13 @@ class CursesRenderer:
         if self.willNotOverflow(nLines,textw):
             xpos = (self.width - textw)/2
             (cy,cx) = self.stdscr.getyx()
-
-            margins = self.stdscr.subwin(nLines+1,textw+2,cy+1,xpos-1)
-            margins.bkgd(' ',curses.color_pair(16))
-            subwin = self.stdscr.subwin(nLines,textw+1,cy+2,xpos)
-            subwin.bkgd(' ',curses.color_pair(16))
-            highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),subwin)
+            padMargins = curses.newpad(nLines+1,textw+2)
+            padMargins.bkgd(' ',curses.color_pair(16))
+            padMargins.refresh(0,0,cy+1,xpos-1,cy+2+nLines,xpos+textw+2)
+            padCode = curses.newpad(nLines,textw+1)
+            padCode.bkgd(' ',curses.color_pair(16))
+            highlight(text,get_lexer_by_name(syntax),UnderstateFormatter(style='monokai'),padCode)
+            padCode.refresh(0,0,cy+2,xpos,cy+1+nLines,xpos+textw+1)
             self.stdscr.move(cy+nLines+2,0)
 
     def onList(self,groups):
@@ -128,9 +158,9 @@ class CursesRenderer:
         if self.willNotOverflow(nLines,textw):
             xpos = (self.width - textw)/2
             (cy,cx) = self.stdscr.getyx()
-
-            subwin = self.stdscr.subwin(nLines,textw+2,cy+1,xpos)
-            subwin.addstr(text,curses.color_pair(2))
+            padList = curses.newpad(nLines,textw+2)
+            padList.addstr(text,curses.color_pair(2))
+            padList.refresh(0,0,cy+1,xpos,cy+1+nLines,xpos+textw+2)
             self.stdscr.move(cy+nLines,1)
 
     def onEnd(self):

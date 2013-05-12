@@ -8,7 +8,7 @@ REQUIREMENTS = [
     ]
 
 setup(name = "understate",
-        version = "0.2.2",
+        version = "0.2.3",
         description = "markdown presentations using ncurses",
         author = "Ithai Levi",
         author_email = "ithai.levi@gmail.com",

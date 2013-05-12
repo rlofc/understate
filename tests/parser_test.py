@@ -11,11 +11,19 @@ class ParserTest(unittest.TestCase):
             pass
         def onEmpty(self,groups):
             pass
+        def closeLine(self):
+            pass
+        def onLink(self,groups):
+            pass
+        def onImage(self,groups):
+            pass
         def onLine(self,groups):
             pass
         def onCode(self,groups):
             pass
         def onList(self,groups):
+            pass
+        def onLineFeed(self,groups):
             pass
         def onEnd(self):
             pass
@@ -84,12 +92,31 @@ class ParserTest(unittest.TestCase):
         class LineRenderer(ParserTest.Renderer):
             def __init__(self): self.lines = 0
             def onLine(self,groups): self.lines = self.lines + 1
-
         r = LineRenderer()
         parser = Parser(r)
         buf = "test\n====\nline1\nline2\nline3\n"
         parser.parse(buf)
         self.assertEqual(r.lines,3)
+
+    def test_parse_line_link(self):
+        class LineRenderer(ParserTest.Renderer):
+            def onLink(self,groups): 
+                self.okay = groups["link"] == "(link)"
+        r = LineRenderer()
+        parser = LineParser(r)
+        buf = "[label](link)\n"
+        parser.onLine({'text':buf})
+        self.assertTrue(r.okay)
+
+    def test_parse_line_image(self):
+        class LineRenderer(ParserTest.Renderer):
+            def onImage(self,groups): 
+                self.okay = groups["text"] == "![label](link)"
+        r = LineRenderer()
+        parser = LineParser(r)
+        buf = "![label](link)\n"
+        parser.onLine({'text':buf})
+        self.assertTrue(r.okay)
 
     def test_parse_code(self):
         class CodeRenderer(ParserTest.Renderer):
